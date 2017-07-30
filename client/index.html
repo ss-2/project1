@@ -1,0 +1,63 @@
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+<form id="nameForm">
+	Display name:<br>
+	<input id=nameInput type="text"><br>
+	<input type="submit" value="Confirm">
+</form>
+
+<div id='answerBlock'>
+	<div id='promptText'>
+	</div>
+	<form id='answerForm'>
+		<input id=answerInput type="text"><br>
+		<input type="submit" value="Submit"><br>
+		<input id=addToFront type="radio" name="gender" value="front" checked> Add to front<br>
+		<input id=addToBack type="radio" name="gender" value="back"> Add to back<br>
+	</form>
+</div>
+
+<script>
+	var socket = io();
+	var nameForm = document.getElementById('nameForm');
+	var nameInput = document.getElementById('nameInput');
+	var answerBlock = document.getElementById('answerBlock');
+	var promptText = document.getElementById('promptText');
+	
+	//first thing upon connecting
+	showNameForm();
+	hideAnswerBlock();
+	
+	//receiving data
+	socket.on('newPrompt',function(data){
+		promptText.innerHTML = "Make a phrase by adding one word to: " + data;
+		hideNameForm();
+		showAnswerBlock();
+	});
+	
+	//submitting data
+	nameForm.onsubmit = function(e){
+		e.preventDefault();
+		socket.emit('setName',nameInput.value);
+		nameInput.value = '';
+		hideNameForm();
+	}
+	function hideNameForm(){
+		nameForm.style.display = 'none';
+	}
+	function showNameForm(){
+		nameForm.style.display = 'block';
+	}
+	function hideAnswerBlock(){
+		answerBlock.style.display = 'none';
+	}
+	function showAnswerBlock(){
+		answerBlock.style.display = 'block';
+	}
+	function hideScoreboard(){
+	
+	}
+	function showScoreboard(){
+	
+	}
+</script>
